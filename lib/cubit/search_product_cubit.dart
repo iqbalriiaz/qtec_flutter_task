@@ -6,6 +6,7 @@ class ProductSearchCubit extends Cubit<List<Results>> {
   final SearchProductApi _api;
   String _searchQuery = '';
 
+
   ProductSearchCubit(this._api) : super([]);
 
   void setSearchQuery(String query) {
@@ -19,11 +20,11 @@ class ProductSearchCubit extends Cubit<List<Results>> {
       try {
         final results = await _api.fetchProducts();
         final filteredResults = results.where((product) =>
-            product.brand.slug.toLowerCase().contains(_searchQuery.toLowerCase()));
+            product.productName.toLowerCase().contains(_searchQuery.toLowerCase()));
         emit(filteredResults.toList());
       } catch (e) {
         emit([]);
-        print('Error fetching hot deal products: $e');
+        print('Error fetching products: $e');
       }
     } else {
       emit([]);

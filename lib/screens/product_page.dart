@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
@@ -17,11 +18,16 @@ class _ProductPageState extends State<ProductPage> {
   final _searchController = TextEditingController();
   final _scrollController = ScrollController();
   bool _isLoading = false;
-  bool _isPaginationEnd = false;
+
+  // bool _isPaginationEnd = false;
   final int _limit = 10;
-  int _offset = 10;
-  bool _noResultsFound = false;
+  int _offset = 0;
+  final bool _noResultsFound = false;
   bool _showNoProductFoundMessage = false;
+  double h1TextSize = 14.0;
+  double h2TextSize = 12.0;
+  double h3TextSize = 11.0;
+  double productPriceSize = 14.0;
 
   Timer? _debounceTimer;
   final List<Results> _products = [];
@@ -60,7 +66,7 @@ class _ProductPageState extends State<ProductPage> {
     setState(() {
       _products.clear();
       _offset = 0;
-      _isPaginationEnd = false;
+      // _isPaginationEnd = false;
     });
     if (text.isEmpty) {
       _loadInitialProducts();
@@ -72,8 +78,38 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
+  // void _loadProducts() async {
+  //   if (_isLoading || _isPaginationEnd) return;
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
+  //   try {
+  //     final searchQuery = _searchController.text;
+  //     if (searchQuery.isEmpty) {
+  //       setState(() {
+  //         _isLoading = false;
+  //       });
+  //       return;
+  //     }
+  //     final products =
+  //         await _productApi.searchProduct(searchQuery, _limit, _offset);
+  //     setState(() {
+  //       _products.addAll(products);
+  //       _offset += _limit;
+  //       _isLoading = false;
+  //       if (products.length < _limit) {
+  //         _isPaginationEnd = true;
+  //       }
+  //     });
+  //   } catch (e) {
+  //     print('Error loading products: $e');
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //   }
+  // }
   void _loadProducts() async {
-    if (_isLoading || _isPaginationEnd) return;
+    if (_isLoading) return;
     setState(() {
       _isLoading = true;
     });
@@ -91,9 +127,6 @@ class _ProductPageState extends State<ProductPage> {
         _products.addAll(products);
         _offset += _limit;
         _isLoading = false;
-        if (products.length < _limit) {
-          _isPaginationEnd = true;
-        }
       });
     } catch (e) {
       print('Error loading products: $e');
@@ -113,68 +146,247 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("All Product")),
-      body: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.only(left: 10, right: 10),
-            decoration: BoxDecoration(
-                color: Colors.grey.shade400,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                )),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search',
-                border: InputBorder.none,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Color(0xffF7F2FF),
+        body: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 50, left: 10, right: 10, bottom: 15),
+              //padding: EdgeInsets.only(left: 20, right: 10,top: 0,bottom: 0),
+
+              decoration: BoxDecoration(
+                  color: Color(0xffFFFFFF),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  )),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                    hintText: 'কাঙ্ক্ষিত পণ্যটি খুঁজুন',
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 0.0, 10.0),
+                    border: InputBorder.none,
+                    suffixIcon: Icon(
+                      Icons.search,
+                      color: Colors.grey,
+                    )),
+                onChanged: _onSearchTextChanged,
               ),
-              onChanged: _onSearchTextChanged,
             ),
-          ),
-          Expanded(
-            child: _noResultsFound
-                ? Center(child: Text('No results found'))
-                : _isLoading && _products.isEmpty
+            Expanded(
+                child: _isLoading && _products.isEmpty
                     ? const Center(
                         child: CircularProgressIndicator(),
                       )
-                    : ListView.builder(
-                        controller: _scrollController,
-                        itemCount: _products.length + 1,
-                        itemBuilder: (context, index) {
-
-                          if (index == _products.length) {
-                            if (_isLoading || _isPaginationEnd) {
-                              Future.delayed(Duration(seconds: 1), () {
-                                setState(() {
-                                  _showNoProductFoundMessage = true;
-                                });
-                              });
-                              return Center(
-                                child: _showNoProductFoundMessage
-                                    ? Text("No product found")
-                                    : CircularProgressIndicator(),
-                              );
-                            } else {
-                              return const SizedBox.shrink();
-                            }
-                          }
-
-                          final product = _products[index];
-                          return ListTile(
-                            leading: Image.network(product.image),
-                            title: Text(product.brand.slug),
-                            subtitle: Text(product.id.toString()),
-                            trailing:
-                                Text(product.charge.bookingPrice.toString()),
-                          );
-                        },
-                      ),
-          ),
-        ],
+                    : _products.isEmpty
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "No Product Found",
+                              style: TextStyle(fontSize: 24),
+                            ))
+                        : Container(
+                            padding: EdgeInsets.only(left: 10, right: 10),
+                            child: GridView.builder(
+                              controller: _scrollController,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      mainAxisExtent: 250,
+                                      mainAxisSpacing: 20,
+                                      crossAxisSpacing: 5),
+                              itemCount: _products.length,
+                              itemBuilder: (context, index) {
+                                if (index == _products.length) {
+                                  if (_isLoading) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                }
+                                final product = _products[index];
+                                return Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    Card(
+                                      elevation: 5.0,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(15),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(top: 10.0),
+                                            height: 130,
+                                            child: Image.network(
+                                              product.image,
+                                            ),
+                                          ),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: EdgeInsets.only(
+                                                top: 8, left: 8, right: 8),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  utf8.decode(
+                                                    product
+                                                        .productName.codeUnits,
+                                                  ),
+                                                  style: TextStyle(
+                                                      fontSize: h1TextSize,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          'ক্রয়',
+                                                          style: TextStyle(
+                                                            fontSize:
+                                                                h3TextSize,
+                                                            color: Color(
+                                                                0xff646464),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Text(
+                                                          '৳${product.charge.currentCharge.toStringAsFixed(2)}',
+                                                          style: TextStyle(
+                                                            fontSize:
+                                                                h1TextSize,
+                                                            color: Color(
+                                                                0xffDA2079),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Text(
+                                                      '৳${product.charge.sellingPrice.toStringAsFixed(2)}',
+                                                      style: TextStyle(
+                                                        decoration:
+                                                            TextDecoration
+                                                                .lineThrough,
+                                                        fontSize: h2TextSize,
+                                                        color:
+                                                            Color(0xffDA2079),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          'বিক্রয়',
+                                                          style: TextStyle(
+                                                            fontSize:
+                                                                h3TextSize,
+                                                            color: Color(
+                                                                0xff646464),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '৳${product.charge.currentCharge.toStringAsFixed(2)}',
+                                                          style: TextStyle(
+                                                            fontSize:
+                                                                h3TextSize,
+                                                            color: Color(
+                                                                0xff646464),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          'লাভ',
+                                                          style: TextStyle(
+                                                            fontSize:
+                                                                h3TextSize,
+                                                            color: Color(
+                                                                0xff646464),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '৳${product.charge.profit.toStringAsFixed(2)}',
+                                                          style: TextStyle(
+                                                            fontSize:
+                                                                h3TextSize,
+                                                            color: Color(
+                                                                0xff646464),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 70,
+                                      bottom: -12,
+                                      child: Container(
+                                        width: 35,
+                                        height: 35,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              Color(
+                                                  0xff6210E1), // first color
+                                              Color(
+                                                  0xff1400AE), // second color
+                                            ],
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                );
+                              },
+                            ),
+                          )),
+          ],
+        ),
       ),
     );
   }

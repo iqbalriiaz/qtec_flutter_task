@@ -9,14 +9,14 @@ class SearchProductApi {
     final response = await http.get(Uri.parse(Constants.baseURL));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final hotDealProductsList = <Results>[];
+      final searchProductList = <Results>[];
 
       for (final i in data["data"]["products"]["results"]) {
         final datum = Results.fromJson(i);
-        hotDealProductsList.add(datum);
+        searchProductList.add(datum);
       }
 
-      return hotDealProductsList;
+      return searchProductList;
     } else {
       throw "Something went wrong, status code: ${response.statusCode}";
     }
