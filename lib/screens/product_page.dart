@@ -2,12 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:qtec_flutter_task/screens/product_details_page.dart';
 
 import '../api/search_product_api.dart';
 import '../models/search_product_model.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({Key? key}) : super(key: key);
+  const ProductPage({super.key});
 
   @override
   State<ProductPage> createState() => _ProductPageState();
@@ -28,7 +29,6 @@ class _ProductPageState extends State<ProductPage> {
   double h2TextSize = 12.0;
   double h3TextSize = 11.0;
   double productPriceSize = 14.0;
-
   Timer? _debounceTimer;
   final List<Results> _products = [];
 
@@ -154,7 +154,6 @@ class _ProductPageState extends State<ProductPage> {
             Container(
               margin: EdgeInsets.only(top: 50, left: 10, right: 10, bottom: 15),
               //padding: EdgeInsets.only(left: 20, right: 10,top: 0,bottom: 0),
-
               decoration: BoxDecoration(
                   color: Color(0xffFFFFFF),
                   borderRadius: BorderRadius.all(
@@ -215,143 +214,166 @@ class _ProductPageState extends State<ProductPage> {
                                           Radius.circular(15),
                                         ),
                                       ),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(top: 10.0),
-                                            height: 130,
-                                            child: Image.network(
-                                              product.image,
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProductDetailsPage(
+                                                  brandName: product.brand.name,
+                                                  buyingPrice: product.charge.currentCharge,
+                                                  distributorName: product.seller,
+                                                  productDescription: product.description,
+                                                  productName: product.productName,
+                                                  profit: product.charge.profit,
+                                                  sellingPrice: product.charge.sellingPrice,
+                                                  productImage: product.image,
+                                                ),
+                                              ));
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              margin:
+                                                  EdgeInsets.only(top: 10.0),
+                                              height: 130,
+                                              child: Image.network(
+                                                product.image,
+                                              ),
                                             ),
-                                          ),
-                                          Container(
-                                            alignment: Alignment.centerLeft,
-                                            margin: EdgeInsets.only(
-                                                top: 8, left: 8, right: 8),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  utf8.decode(
-                                                    product
-                                                        .productName.codeUnits,
+                                            Container(
+                                              alignment: Alignment.centerLeft,
+                                              margin: EdgeInsets.only(
+                                                  top: 8, left: 8, right: 8),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    utf8.decode(
+                                                      product.productName
+                                                          .codeUnits,
+                                                    ),
+                                                    style: TextStyle(
+                                                        fontSize: h1TextSize,
+                                                        fontWeight:
+                                                            FontWeight.w500),
                                                   ),
-                                                  style: TextStyle(
-                                                      fontSize: h1TextSize,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          'ক্রয়',
-                                                          style: TextStyle(
-                                                            fontSize:
-                                                                h3TextSize,
-                                                            color: Color(
-                                                                0xff646464),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            'ক্রয়',
+                                                            style: TextStyle(
+                                                              fontSize:
+                                                                  h3TextSize,
+                                                              color: Color(
+                                                                  0xff646464),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 5,
-                                                        ),
-                                                        Text(
-                                                          '৳${product.charge.currentCharge.toStringAsFixed(2)}',
-                                                          style: TextStyle(
-                                                            fontSize:
-                                                                h1TextSize,
-                                                            color: Color(
-                                                                0xffDA2079),
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                          SizedBox(
+                                                            width: 5,
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Text(
-                                                      '৳${product.charge.bookingPrice.toStringAsFixed(2)}',
-                                                      style: TextStyle(
-                                                        decoration:
-                                                            TextDecoration
-                                                                .lineThrough,
-                                                        fontSize: h2TextSize,
-                                                        color:
-                                                            Color(0xffDA2079),
+                                                          Text(
+                                                            '৳${product.charge.currentCharge.toStringAsFixed(2)}',
+                                                            style: TextStyle(
+                                                              fontSize:
+                                                                  h1TextSize,
+                                                              color: Color(
+                                                                  0xffDA2079),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          'বিক্রয়',
-                                                          style: TextStyle(
-                                                            fontSize:
-                                                                h3TextSize,
-                                                            color: Color(
-                                                                0xff646464),
-                                                          ),
+                                                      Text(
+                                                        '৳${product.charge.bookingPrice.toStringAsFixed(2)}',
+                                                        style: TextStyle(
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .lineThrough,
+                                                          fontSize: h2TextSize,
+                                                          color:
+                                                              Color(0xffDA2079),
                                                         ),
-                                                        Text(
-                                                          '৳${product.charge.sellingPrice.toStringAsFixed(2)}',
-                                                          style: TextStyle(
-                                                            fontSize:
-                                                                h2TextSize,
-                                                            color: Color(
-                                                                0xff646464),
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            'বিক্রয়',
+                                                            style: TextStyle(
+                                                              fontSize:
+                                                                  h3TextSize,
+                                                              color: Color(
+                                                                  0xff646464),
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          'লাভ',
-                                                          style: TextStyle(
-                                                            fontSize:
-                                                                h3TextSize,
-                                                            color: Color(
-                                                                0xff646464),
+                                                          Text(
+                                                            '৳${product.charge.sellingPrice.toStringAsFixed(2)}',
+                                                            style: TextStyle(
+                                                              fontSize:
+                                                                  h2TextSize,
+                                                              color: Color(
+                                                                  0xff646464),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        Text(
-                                                          '৳${product.charge.profit.toStringAsFixed(2)}',
-                                                          style: TextStyle(
-                                                            fontSize:
-                                                            h2TextSize,
-                                                            color: Color(
-                                                                0xff646464),
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            'লাভ',
+                                                            style: TextStyle(
+                                                              fontSize:
+                                                                  h3TextSize,
+                                                              color: Color(
+                                                                  0xff646464),
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
+                                                          Text(
+                                                            '৳${product.charge.profit.toStringAsFixed(2)}',
+                                                            style: TextStyle(
+                                                              fontSize:
+                                                                  h2TextSize,
+                                                              color: Color(
+                                                                  0xff646464),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     Positioned(
@@ -366,10 +388,8 @@ class _ProductPageState extends State<ProductPage> {
                                             begin: Alignment.topLeft,
                                             end: Alignment.bottomRight,
                                             colors: [
-                                              Color(
-                                                  0xff6210E1), // first color
-                                              Color(
-                                                  0xff1400AE), // second color
+                                              Color(0xff6210E1), // first color
+                                              Color(0xff1400AE), // second color
                                             ],
                                           ),
                                         ),
