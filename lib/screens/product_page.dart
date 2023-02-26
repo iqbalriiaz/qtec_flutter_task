@@ -278,7 +278,7 @@ class _ProductPageState extends State<ProductPage> {
                                                       ],
                                                     ),
                                                     Text(
-                                                      '৳${product.charge.sellingPrice.toStringAsFixed(2)}',
+                                                      '৳${product.charge.bookingPrice.toStringAsFixed(2)}',
                                                       style: TextStyle(
                                                         decoration:
                                                             TextDecoration
@@ -310,10 +310,10 @@ class _ProductPageState extends State<ProductPage> {
                                                           ),
                                                         ),
                                                         Text(
-                                                          '৳${product.charge.currentCharge.toStringAsFixed(2)}',
+                                                          '৳${product.charge.sellingPrice.toStringAsFixed(2)}',
                                                           style: TextStyle(
                                                             fontSize:
-                                                                h3TextSize,
+                                                                h2TextSize,
                                                             color: Color(
                                                                 0xff646464),
                                                             fontWeight:
@@ -337,7 +337,7 @@ class _ProductPageState extends State<ProductPage> {
                                                           '৳${product.charge.profit.toStringAsFixed(2)}',
                                                           style: TextStyle(
                                                             fontSize:
-                                                                h3TextSize,
+                                                            h2TextSize,
                                                             color: Color(
                                                                 0xff646464),
                                                             fontWeight:
