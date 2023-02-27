@@ -12,23 +12,23 @@ void main() {
 class MyApp extends StatelessWidget {
   final SearchProductApi hotDealProductApi = SearchProductApi();
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //     debugShowCheckedModeBanner: false,
-  //     title: 'Qtec Task',
-  //     home: BlocProvider<ProductSearchCubit>(
-  //       create: (context) => ProductSearchCubit(hotDealProductApi),
-  //       child: ProductPage(),
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Your App Name Here',
-      home: ProductPage(),
+      debugShowCheckedModeBanner: false,
+      title: 'Qtec Task',
+      home: BlocProvider<ProductSearchCubit>(
+        create: (context) => ProductSearchCubit(hotDealProductApi),
+        child: ProductPage(),
+      ),
     );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MaterialApp(
+  //     title: 'Your App Name Here',
+  //     home: ProductPage(),
+  //   );
+  // }
 }

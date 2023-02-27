@@ -48,6 +48,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   Timer? _debounceTimer;
   final List<Results> _products = [];
   int _currentImageIndex = 0;
+  String cartText = "এটি\nকিনুন";
+  bool isIconVisible = false;
+  bool isProductCountVisible = false;
+  int quantity = 0;
 
   @override
   void initState() {
@@ -224,7 +228,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 );
               }).toList(),
               options: CarouselOptions(
-                height: 280.0,
+                height: 250.0,
                 aspectRatio: 16 / 2,
                 viewportFraction: 0.7,
                 initialPage: 0,
@@ -296,81 +300,200 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       )
                     ],
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 15, left: 5, right: 5),
-                    padding: EdgeInsets.only(left: 12, right: 12),
-                    height: 110,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 15, left: 5, right: 5),
+                        padding: EdgeInsets.only(left: 12, right: 12),
+                        height: 110,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              "ক্রয়মূল্যঃ",
-                              style: TextStyle(
-                                  fontSize: h2TextSize,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xffDA2079)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "ক্রয়মূল্যঃ",
+                                  style: TextStyle(
+                                      fontSize: h2TextSize,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xffDA2079)),
+                                ),
+                                Text("৳ ${widget.buyingPrice}",
+                                    style: TextStyle(
+                                        fontSize: h2TextSize,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xffDA2079))),
+                              ],
                             ),
-                            Text("৳ ${widget.buyingPrice}",
-                                style: TextStyle(
-                                    fontSize: h2TextSize,
+                            SizedBox(
+                              height: 3,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "বিক্রয়মূল্যঃ",
+                                  style: TextStyle(
+                                    fontSize: h3TextSize,
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xffDA2079))),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "বিক্রয়মূল্যঃ",
-                              style: TextStyle(
-                                fontSize: h3TextSize,
-                                fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+
+                                Visibility(
+                                  visible: isProductCountVisible,
+                                  child: Container(
+                                    height: 35,
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Color(0xffFFCCE4)
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          width: 40,
+                                          height: 30,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Color(0xffFFBFDD)
+                                          ),
+                                          child: IconButton(
+                                            padding: EdgeInsets.zero,
+                                            icon: Icon(Icons.remove),
+                                            color: Colors.white,
+                                            onPressed: () {
+                                              setState(() {
+                                                quantity>0 ? quantity--: quantity;
+                                                quantity == 0 ? isProductCountVisible = false : true;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        Text(
+                                          "${quantity} পিস" ,
+                                          style: TextStyle(
+                                              color: Color(0xffDA2079), fontSize: 14),
+                                        ),
+                                        Container(
+                                          width: 40,
+                                          height: 30,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color(0xff6210E1),
+                                                Color(0xff1400AE)
+                                              ],
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                            ),
+                                          ),
+                                          child: IconButton(
+                                            padding: EdgeInsets.zero,
+                                            icon: Icon(Icons.add),
+                                            color: Colors.white,
+                                            onPressed: () {
+                                              setState(() {
+                                                quantity++;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Text("৳ ${widget.sellingPrice}",
+                                    style: TextStyle(
+                                      fontSize: h3TextSize,
+                                      fontWeight: FontWeight.w500,
+                                    )),
+                              ],
+                            ),
+                            Container(
+                              decoration: BoxDecoration(),
+                              child: Text(
+                                "${Constants.dottedLine}",
+                                maxLines: 1,
+                                style: TextStyle(color: Colors.grey),
                               ),
                             ),
-                            Text("৳ ${widget.sellingPrice}",
-                                style: TextStyle(
-                                  fontSize: h3TextSize,
-                                  fontWeight: FontWeight.w500,
-                                )),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "লাভঃ",
+                                  style: TextStyle(
+                                    fontSize: h3TextSize,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Text("৳ ${widget.profit}",
+                                    style: TextStyle(
+                                      fontSize: h3TextSize,
+                                      fontWeight: FontWeight.w500,
+                                    )),
+                              ],
+                            ),
                           ],
                         ),
-                        Container(
-                          decoration: BoxDecoration(),
-                          child: Text(
-                            "${Constants.dottedLine}",
-                            maxLines: 1,
-                            style: TextStyle(color: Colors.grey),
+                      ),
+                      Positioned(
+                        height: 75,
+                        width: 70,
+                        left: MediaQuery.of(context).orientation ==
+                                Orientation.portrait
+                            ? MediaQuery.of(context).size.width / 2.6
+                            : MediaQuery.of(context).size.width / 2.3,
+                        bottom: -43,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              cartText = "কার্ট";
+                              isIconVisible = true;
+                              isProductCountVisible= true;
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)),
+                              image: DecorationImage(
+                                image: AssetImage("images/polygon.png"),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                isIconVisible
+                                    ? Icon(
+                                        Icons.shopping_bag_outlined,
+                                        color: Colors.white,
+                                      )
+                                    : Container(),
+                                Text(
+                                  cartText,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "লাভঃ",
-                              style: TextStyle(
-                                fontSize: h3TextSize,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            Text("৳ ${widget.profit}",
-                                style: TextStyle(
-                                  fontSize: h3TextSize,
-                                  fontWeight: FontWeight.w500,
-                                )),
-                          ],
-                        ),
-                      ],
-                    ),
+                      )
+                    ],
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 15, left: 5, right: 5),
