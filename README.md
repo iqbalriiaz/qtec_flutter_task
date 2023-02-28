@@ -19,7 +19,7 @@ The following are some screenshots of the app:
 
 Screenshot1 | Screenshot2 |  Screenshot3 |  Screenshot4
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-![image](https://github.com/iqbalriiaz/qtec_flutter_task/blob/main/images/Screenshot%20from%202023-03-01%2005-04-10.png) | ![image](https://github.com/iqbalriiaz/qtec_flutter_task/blob/main/images/Screenshot%20from%202023-03-01%2005-04-17.png) | ![image](https://github.com/iqbalriiaz/qtec_flutter_task/blob/main/images/Screenshot%20from%202023-03-01%2005-04-33.png) | ![image] (https://github.com/iqbalriiaz/qtec_flutter_task/blob/main/images/Screenshot%20from%202023-03-01%2005-04-39.png) 
+![image](https://github.com/iqbalriiaz/qtec_flutter_task/blob/main/images/Screenshot%20from%202023-03-01%2005-04-10.png) | ![image](https://github.com/iqbalriiaz/qtec_flutter_task/blob/main/images/Screenshot%20from%202023-03-01%2005-04-17.png) | ![image](https://github.com/iqbalriiaz/qtec_flutter_task/blob/main/images/Screenshot%20from%202023-03-01%2005-04-33.png) | ![image](https://github.com/iqbalriiaz/qtec_flutter_task/blob/main/images/Screenshot%20from%202023-03-01%2005-04-39.png) 
 
 Screencast 
 :-------------------------:
