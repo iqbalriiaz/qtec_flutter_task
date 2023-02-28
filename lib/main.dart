@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qtec_flutter_task/screens/product_details_page.dart';
 import 'package:qtec_flutter_task/screens/product_page.dart';
-import 'api/search_product_api.dart';
+import 'api/api_class.dart';
 import 'cubit/search_product_cubit.dart';
 
 void main() {
@@ -10,7 +9,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final SearchProductApi hotDealProductApi = SearchProductApi();
+  final ApiClass hotDealProductApi = ApiClass();
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +22,4 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //     title: 'Your App Name Here',
-  //     home: ProductPage(),
-  //   );
-  // }
 }

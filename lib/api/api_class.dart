@@ -2,17 +2,18 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../constants/constants.dart';
-import '../models/search_product_model.dart';
+import '../models/search_product_model.dart' as searchModel;
+import '../models/details_product_model.dart' as detailsModel;
 
-class SearchProductApi {
-  Future<List<Results>> fetchProducts() async {
+class ApiClass {
+  Future<List<searchModel.Results>> fetchProducts() async {
     final response = await http.get(Uri.parse(Constants.baseURL));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final searchProductList = <Results>[];
+      final searchProductList = <searchModel.Results>[];
 
       for (final i in data["data"]["products"]["results"]) {
-        final datum = Results.fromJson(i);
+        final datum = searchModel.Results.fromJson(i);
         searchProductList.add(datum);
       }
 
@@ -22,14 +23,14 @@ class SearchProductApi {
     }
   }
 
-  Future<List<Results>> searchProduct(String query, int limit, int offset) async {
+  Future<List<searchModel.Results>> searchProduct(String query, int limit, int offset) async {
     final response = await http.get(Uri.parse('${Constants.baseURL}limit=$limit&offset=$offset&search=$query'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final searchProductsList = <Results>[];
+      final searchProductsList = <searchModel.Results>[];
 
       for (final i in data["data"]["products"]["results"]) {
-        final datum = Results.fromJson(i);
+        final datum = searchModel.Results.fromJson(i);
         searchProductsList.add(datum);
       }
 
@@ -38,4 +39,5 @@ class SearchProductApi {
       throw "Something went wrong, status code: ${response.statusCode}";
     }
   }
+
 }
